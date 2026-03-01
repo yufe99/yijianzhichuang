@@ -1,7 +1,7 @@
 import { io, Socket } from 'socket.io-client';
 import type { PipelineStage } from '@/types';
 
-const WS_URL = import.meta.env.VITE_WS_URL || '';
+const WS_URL = 'https://yijianzhichuang-api.onrender.com';
 
 type ProgressCallback = (data: { stage: PipelineStage; progress: number }) => void;
 type CompleteCallback = (data: { outputUrl: string; thumbnail?: string; duration?: number }) => void;
