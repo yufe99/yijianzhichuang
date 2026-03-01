@@ -1,0 +1,38 @@
+import { io, Socket } from 'socket.io-client';
+import type { PipelineStage } from '@/types';
+
+type ProgressCallback = (data: { stage: PipelineStage; progress: number }) => void;
+type CompleteCallback = (data: { outputUrl: string; thumbnail?: string; duration?: number }) => void;
+type ErrorCallback = (error: string) => void;
+
+class WebSocketService {
+  private socket: Socket | null = null;
+  
+  connect(taskId: string) {
+    this.socket = io('/ws', {
+      query: { taskId },
+      transports: ['websocket'],
+    });
+    
+    return this.socket;
+  }
+  
+  onProgress(callback: ProgressCallback) {
+    this.socket?.on('progress', callback);
+  }
+  
+  onComplete(callback: CompleteCallback) {
+    this.socket?.on('complete', callback);
+  }
+  
+  onError(callback: ErrorCallback) {
+    this.socket?.on('error', callback);
+  }
+  
+  disconnect() {
+    this.socket?.disconnect();
+    this.socket = null;
+  }
+}
+
+export const wsService = new WebSocketService();
